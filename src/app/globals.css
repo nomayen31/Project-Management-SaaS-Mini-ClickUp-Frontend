@@ -205,3 +205,10 @@ h2, h3 { font-weight: 650; }
 .dashboard-progress progress::-webkit-progress-bar { background: var(--role-bg); }
 .dashboard-progress progress::-webkit-progress-value { background: var(--accent-ink); border-radius: 1rem; }
 .dashboard-progress progress::-moz-progress-bar { background: var(--accent-ink); border-radius: 1rem; }
+
+.collaboration { display: grid; gap: 1rem; }
+.collaboration section { display: grid; gap: .75rem; }
+.collaboration-time { color: var(--muted); font-size: .8rem; }
+.collaboration-mentions { display: grid; gap: .4rem; margin-top: .45rem; }
+.workspace-content .collaboration-mentions label { display: flex; align-items: center; gap: .5rem; }
+.collaboration [aria-pressed="true"] { background: var(--role-bg); color: var(--role-ink); }
