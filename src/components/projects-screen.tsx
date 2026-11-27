@@ -47,9 +47,7 @@ export function ProjectsScreen() {
   const view = selectedView === "board" || selectedView === "calendar" ? selectedView : "list";
   const taskId = params.get("task");
 
-  return <div className="workspace-page">
-    <header className="workspace-header"><Link href="/" className="auth-brand">TaskFlow</Link><Link href="/workspaces">Workspaces</Link></header>
-    <main className="workspace-content projects-content">
+  return <main className="workspace-content projects-content">
       <h1>Projects</h1>
       {signedOut ? <p><Link href="/auth">Sign in</Link> to view projects.</p> : <Feedback loading={workspaces.isPending} error={workspaces.error} />}
       {workspaces.isSuccess && (active ? <>
@@ -58,8 +56,7 @@ export function ProjectsScreen() {
         </nav>
         {projectId ? <ProjectDetails key={active.id + projectId} workspace={active} projectId={projectId} taskId={taskId} view={view} /> : <ProjectsList key={active.id} workspace={active} />}
       </> : <p><Link href="/workspaces">Create a workspace</Link> to start a project.</p>)}
-    </main>
-  </div>;
+    </main>;
 }
 
 type ProjectView = "list" | "board" | "calendar";

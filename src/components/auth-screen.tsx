@@ -8,7 +8,6 @@ import { createAuthClient } from "better-auth/react";
 import { dashClient, sentinelClient } from "@better-auth/infra/client";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
-import { AppProviders } from "@/components/app-providers";
 
 const providerSchema = z.object({
   data: z.object({ email: z.boolean(), google: z.boolean(), dash: z.boolean(), sentinel: z.boolean() }),
@@ -23,10 +22,6 @@ const titles: Record<Mode, string> = {
 const returnTo = "/auth?mode=sessions";
 
 export function AuthScreen() {
-  return <AppProviders><AuthPageContent /></AppProviders>;
-}
-
-function AuthPageContent() {
   const params = useSearchParams();
   const selection = params.get("mode");
   const mode = modes.find((value) => value === selection) ?? "sign-in";

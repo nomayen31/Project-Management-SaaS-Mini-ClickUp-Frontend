@@ -77,9 +77,7 @@ export function WorkspacesScreen() {
   }
 
   return (
-    <div className="workspace-page">
-      <header className="workspace-header"><Link href="/" className="auth-brand">TaskFlow</Link><Link href="/auth?mode=sessions">Account</Link></header>
-      <main className="workspace-content">
+    <main className="workspace-content">
         <h1>Workspaces</h1>
         {inviteToken && <section className="workspace-panel workspace-invitation">
           <h2>Workspace invitation</h2>
@@ -107,7 +105,6 @@ export function WorkspacesScreen() {
         {feedback.notice && <p role="status">{feedback.notice}</p>}
         {active && <WorkspaceDetails workspace={active} key={active.id} />}
       </main>
-    </div>
   );
 }
 
