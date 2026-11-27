@@ -17,7 +17,7 @@ export class WorkspaceRequestError extends Error {
 }
 
 const root = "/api/workspaces";
-async function request<T>(path: string, schema: z.ZodType<T>, init: RequestInit = {}): Promise<T> {
+export async function request<T>(path: string, schema: z.ZodType<T>, init: RequestInit = {}): Promise<T> {
   const response = await fetch(root + path, { ...init, cache: "no-store" });
   if (response.status === 204) return schema.parse(undefined);
   const body: unknown = await response.json().catch(() => null);
@@ -28,7 +28,7 @@ async function request<T>(path: string, schema: z.ZodType<T>, init: RequestInit 
   return z.object({ data: schema }).parse(body).data;
 }
 
-function json(method: string, body: object): RequestInit {
+export function json(method: string, body: object): RequestInit {
   return { method, headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) };
 }
 

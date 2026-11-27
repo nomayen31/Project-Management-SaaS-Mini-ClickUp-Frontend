@@ -7,3 +7,5 @@ The workspace overview reads the live health endpoint through the Next.js API re
 Open `/auth` for the sign-in and account screens. Authentication requests go through the existing same-origin rewrite. Provider availability depends on the backend environment.
 
 Open `/workspaces` to create or switch workspaces, manage members, and accept invite links.
+
+Open `/projects` to browse projects in the selected workspace. Project details include the team, progress, and the task list. Open a task to view its people, checklist, and attachments.

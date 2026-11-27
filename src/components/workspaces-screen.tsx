@@ -145,7 +145,7 @@ function WorkspaceDetails({ workspace }: { workspace: Workspace }) {
 
   return <>
     <section className="workspace-panel">
-      <div className="workspace-heading"><h2>{workspace.name}</h2><span className="workspace-role">{labels[role]}</span></div>
+      <div className="workspace-heading"><h2>{workspace.name}</h2><span className="workspace-role">{labels[role]}</span><Link href={`/projects?workspace=${id}`}>Open projects</Link></div>
       {isManager && <form className="workspace-inline" onSubmit={(event) => {
         event.preventDefault();
         const name = String(new FormData(event.currentTarget).get("name"));

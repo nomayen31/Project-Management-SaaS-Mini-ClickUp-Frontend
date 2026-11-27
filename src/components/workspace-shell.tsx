@@ -76,6 +76,7 @@ export function WorkspaceShell() {
           <nav aria-label="Workspace navigation">
             <a href="#overview" className="nav-item" aria-current="page" onClick={() => setMenuOpen(false)}><LayoutGrid size={17} /> Overview</a>
             <Link href="/workspaces" className="nav-item mt-2"><FolderOpen size={17} /> Workspaces</Link>
+            <Link href="/projects" className="nav-item mt-2">Projects</Link>
             <Link href="/auth?mode=sessions" className="nav-item mt-2">Account</Link>
           </nav>
         </aside>
