@@ -4,6 +4,8 @@ import { useState, type FormEvent, type ReactNode } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { ProjectBoard } from "./project-board";
+import { ProjectCalendar } from "./project-calendar";
 import { TaskAttachments } from "./task-attachments";
 import { Button } from "@/components/ui/button";
 import { workspacesApi, WorkspaceRequestError, type Workspace } from "@/lib/workspaces-api";
@@ -41,6 +43,8 @@ export function ProjectsScreen() {
   const active = workspaces.data?.find((item) => item.id === params.get("workspace")) ?? workspaces.data?.[0];
   const signedOut = workspaces.error instanceof WorkspaceRequestError && workspaces.error.status === 401;
   const projectId = params.get("project");
+  const selectedView = params.get("view");
+  const view = selectedView === "board" || selectedView === "calendar" ? selectedView : "list";
   const taskId = params.get("task");
 
   return <div className="workspace-page">
@@ -52,17 +56,20 @@ export function ProjectsScreen() {
         <nav aria-label="Project workspaces" className="project-workspaces">
           {workspaces.data.map((workspace) => <Link key={workspace.id} href={projectHref(workspace.id)} aria-current={workspace.id === active.id ? "page" : undefined}>{workspace.name}</Link>)}
         </nav>
-        {projectId ? <ProjectDetails key={active.id + projectId} workspace={active} projectId={projectId} taskId={taskId} /> : <ProjectsList key={active.id} workspace={active} />}
+        {projectId ? <ProjectDetails key={active.id + projectId} workspace={active} projectId={projectId} taskId={taskId} view={view} /> : <ProjectsList key={active.id} workspace={active} />}
       </> : <p><Link href="/workspaces">Create a workspace</Link> to start a project.</p>)}
     </main>
   </div>;
 }
 
-function projectHref(workspaceId: string, projectId?: string, taskId?: string) {
+type ProjectView = "list" | "board" | "calendar";
+
+function projectHref(workspaceId: string, projectId?: string, taskId?: string, view?: ProjectView) {
   const query = new URLSearchParams({ workspace: workspaceId });
   if (projectId) query.set("project", projectId);
   if (taskId) query.set("task", taskId);
-  return "/projects?" + query;
+  if (view && view !== "list") query.set("view", view);
+  return "/projects?" + query + (taskId ? "#task-details" : "");
 }
 
 function Filters({ statuses, labelFilter, onApply }: { statuses: readonly string[]; labelFilter?: boolean; onApply: (filters: Record<string, string>) => void }) {
@@ -149,7 +156,7 @@ function ProjectsList({ workspace }: { workspace: Workspace }) {
   </>;
 }
 
-function ProjectDetails({ workspace, projectId, taskId }: { workspace: Workspace; projectId: string; taskId: string | null }) {
+function ProjectDetails({ workspace, projectId, taskId, view }: { workspace: Workspace; projectId: string; taskId: string | null; view: ProjectView }) {
   const [deleted, setDeleted] = useState(false);
   const id = workspace.id;
   const manager = workspace.role === "OWNER" || workspace.role === "ADMIN";
@@ -181,8 +188,13 @@ function ProjectDetails({ workspace, projectId, taskId }: { workspace: Workspace
         <Feedback error={change.error} />
       </section>
       <ProjectTeam workspaceId={id} projectId={projectId} manager={manager} members={members.data} error={members.error} />
-      <TaskList workspaceId={id} projectId={projectId} editable={editTasks} />
-      {taskId && <TaskDetails key={taskId} workspaceId={id} projectId={projectId} taskId={taskId} editable={editTasks} members={members.data ?? []} />}
+      <nav className="project-workspaces" aria-label="Project views">
+        {(["list", "board", "calendar"] as const).map((item) => <Link key={item} href={projectHref(id, projectId, undefined, item)} aria-current={item === view ? "page" : undefined}>{title(item)}</Link>)}
+      </nav>
+      {view === "list" && <TaskList workspaceId={id} projectId={projectId} editable={editTasks} />}
+      {view === "board" && <ProjectBoard workspaceId={id} projectId={projectId} editable={editTasks} taskHref={(task) => projectHref(id, projectId, task, view)} />}
+      {view === "calendar" && <ProjectCalendar workspaceId={id} projectId={projectId} taskHref={(task) => projectHref(id, projectId, task, view)} />}
+      {taskId && <TaskDetails key={taskId} workspaceId={id} projectId={projectId} taskId={taskId} editable={editTasks} members={members.data ?? []} view={view} />}
     </>}
   </>;
 }
@@ -262,8 +274,8 @@ function TaskList({ workspaceId, projectId, editable }: { workspaceId: string; p
   </section>;
 }
 
-function TaskDetails({ workspaceId, projectId, taskId, editable, members }: {
-  workspaceId: string; projectId: string; taskId: string; editable: boolean; members: ProjectMember[];
+function TaskDetails({ workspaceId, projectId, taskId, editable, members, view }: {
+  workspaceId: string; projectId: string; taskId: string; editable: boolean; members: ProjectMember[]; view: ProjectView;
 }) {
   const [deleted, setDeleted] = useState(false);
   const result = useQuery({
@@ -284,8 +296,8 @@ function TaskDetails({ workspaceId, projectId, taskId, editable, members }: {
       setDeleted(true);
     });
   };
-  return <section className="workspace-panel" aria-label="Task details">
-    <Link href={projectHref(workspaceId, projectId)}>Close task</Link>
+  return <section id="task-details" tabIndex={-1} className="workspace-panel" aria-label="Task details">
+    <Link href={projectHref(workspaceId, projectId, undefined, view)}>Close task</Link>
     {deleted ? <p role="status">Task deleted.</p> : <Feedback loading={result.isPending} error={result.error || change.error || toggle.error} />}
     {task && !deleted && <>
       <div className="workspace-heading"><h2>{task.title}</h2><span className="workspace-role">{title(task.status)}</span></div>

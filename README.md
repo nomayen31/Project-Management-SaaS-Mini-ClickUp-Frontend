@@ -9,3 +9,5 @@ Open `/auth` for the sign-in and account screens. Authentication requests go thr
 Open `/workspaces` to create or switch workspaces, manage members, and accept invite links.
 
 Open `/projects` to browse projects in the selected workspace. Project details include the team, progress, and the task list. Open a task to view its people, checklist, and attachments.
+
+Inside a project, switch between List, Board, and Calendar. On the board, drag a card by its handle or use its column selector and reorder buttons. The calendar shows tasks by their start and due dates.

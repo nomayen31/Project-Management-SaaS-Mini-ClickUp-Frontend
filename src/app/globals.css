@@ -124,3 +124,32 @@ h2, h3 { font-weight: 650; }
 .project-description { white-space: pre-wrap; overflow-wrap: anywhere; }
 .projects-content textarea { width: 100%; min-height: 5rem; padding: .55rem .7rem; border: 1px solid #8b8092; border-radius: .5rem; }
 .projects-content .subtask-checkbox { display: flex; gap: .5rem; align-items: center; }
+
+.board-grid { display: grid; grid-template-columns: repeat(4, minmax(13.5rem, 1fr)); gap: .75rem; overflow-x: auto; padding: .18rem .18rem .65rem; }
+.board-column { display: flex; flex-direction: column; align-items: stretch; gap: .6rem; min-height: 12rem; padding: .65rem; background: #f6f3f8; border: 1px solid var(--line); border-radius: .65rem; }
+.board-column[data-over="true"] { border-color: #80649b; }
+.board-column h3, .board-card-heading, .board-meta, .board-actions, .calendar-header { display: flex; align-items: center; gap: .45rem; }
+.board-count, .board-empty, .board-meta, .board-people { color: #62566a; font-size: .8rem; }
+.board-status { width: .55rem; height: .55rem; border-radius: 50%; background: #765991; }
+.board-status[data-status="IN_PROGRESS"] { background: #946000; }
+.board-status[data-status="IN_REVIEW"] { background: #245e9a; }
+.board-status[data-status="DONE"] { background: #207a61; }
+.board-cards { display: grid; gap: .5rem; }
+.board-card { position: relative; display: grid; gap: .55rem; padding: .65rem; background: var(--panel); border: 1px solid var(--line); border-radius: .55rem; overflow-wrap: anywhere; }
+.board-card[data-dragging="true"] { z-index: 2; border-color: #80649b; }
+.board-card-heading { justify-content: space-between; align-items: start; font-weight: 650; }
+.board-handle { padding: .22rem; color: #54415e; touch-action: none; cursor: grab; }
+.board-meta, .board-actions { flex-wrap: wrap; }
+.board-priority { color: #5c4969; text-transform: capitalize; }
+.board-priority[data-priority="URGENT"], .board-priority[data-priority="HIGH"] { color: #8b3148; }
+.board-actions button { display: grid; min-width: 1.65rem; min-height: 1.65rem; place-content: center; border-radius: .3rem; border: 1px solid var(--line); }
+.board-actions button:disabled { cursor: default; }
+.board-actions select { flex: 1; min-width: 0; font-size: .8rem; }
+.calendar-header { flex-wrap: wrap; justify-content: space-between; }
+.calendar-scroll { overflow-x: auto; }
+.calendar-grid { width: 100%; min-width: 42rem; table-layout: fixed; border-collapse: collapse; }
+.calendar-grid th, .calendar-grid td { border: 1px solid var(--line); padding: .45rem; text-align: start; vertical-align: top; }
+.calendar-grid td { height: 5.5rem; overflow-wrap: anywhere; }
+.calendar-grid td[data-outside="true"] { background: #f7f4f8; color: #65576d; }
+.calendar-grid li { padding-block: .15rem; font-size: .8rem; }
+@media (prefers-reduced-motion: reduce) { .board-card { transition: none !important; } }

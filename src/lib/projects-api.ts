@@ -56,6 +56,8 @@ export const tasksApi = {
   create: (workspaceId: string, projectId: string, input: TaskInput) => request(tasks(workspaceId, projectId), task, json("POST", input)),
   update: (workspaceId: string, projectId: string, id: string, input: TaskInput) => request(taskPath(workspaceId, projectId, id), task, json("PATCH", input)),
   remove: (workspaceId: string, projectId: string, id: string) => request(taskPath(workspaceId, projectId, id), empty, { method: "DELETE" }),
+  move: (workspaceId: string, projectId: string, id: string, status: Task["status"], beforeId: string | null) =>
+    request(`${taskPath(workspaceId, projectId, id)}/move`, empty, json("POST", { status, beforeId })),
   setParticipant: (workspaceId: string, projectId: string, id: string, userId: string, role: ParticipantRole) =>
     request(`${taskPath(workspaceId, projectId, id)}/participants/${encodeURIComponent(userId)}`, empty, json("PUT", { role })),
   removeParticipant: (workspaceId: string, projectId: string, id: string, userId: string) =>
