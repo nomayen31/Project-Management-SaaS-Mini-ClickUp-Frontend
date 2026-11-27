@@ -7,6 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import { createAuthClient } from "better-auth/react";
 import { dashClient, sentinelClient } from "@better-auth/infra/client";
 import { z } from "zod";
+import { AccountPreferences } from "./account-preferences";
 import { Button } from "@/components/ui/button";
 
 const providerSchema = z.object({
@@ -17,7 +18,7 @@ const modes = ["sign-in", "sign-up", "forgot", "reset", "verify", "sessions"] as
 type Mode = (typeof modes)[number];
 const titles: Record<Mode, string> = {
   "sign-in": "Sign in", "sign-up": "Create your account", forgot: "Reset your password",
-  reset: "Choose a new password", verify: "Verify your email", sessions: "Your sessions",
+  reset: "Choose a new password", verify: "Verify your email", sessions: "Your account",
 };
 const returnTo = "/auth?mode=sessions";
 
@@ -107,6 +108,24 @@ function AuthForm({ mode, providers, token, callbackError, verified }: { mode: M
         {session.isPending ? <p role="status">Checking session…</p> : session.error ? <p role="alert">Your session could not be checked.</p> : session.data ? (
           <>
             <p>Signed in as <strong>{session.data.user.email}</strong></p>
+            <form className="account-profile" onSubmit={(event) => {
+              event.preventDefault();
+              const name = String(new FormData(event.currentTarget).get("displayName") ?? "").trim();
+              if (!name) {
+                setError("Enter a display name.");
+                return;
+              }
+              void run(async () => {
+                const result = await client.updateUser({ name });
+                if (result.error) throw result.error;
+                setNotice("Display name saved.");
+              });
+            }}>
+              <h2>Profile</h2>
+              <label>Display name<input name="displayName" defaultValue={session.data.user.name} maxLength={100} autoComplete="name" required /></label>
+              <Button type="submit" disabled={busy}>Save profile</Button>
+            </form>
+            <AccountPreferences />
             <Link href="/workspaces">Open workspaces</Link>
             <Button disabled={busy} onClick={() => void run(async () => {
               const result = await client.revokeOtherSessions();
