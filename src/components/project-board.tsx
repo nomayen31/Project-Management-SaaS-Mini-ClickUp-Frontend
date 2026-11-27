@@ -7,6 +7,7 @@ import { useInfiniteQuery, useMutation, useQueryClient } from "@tanstack/react-q
 import { ArrowDown, ArrowUp, GripVertical } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { collaborationRefresh } from "@/lib/collaboration-api";
 import { tasksApi, taskStatuses, type Task } from "@/lib/projects-api";
 import { WorkspaceRequestError } from "@/lib/workspaces-api";
 
@@ -77,6 +78,7 @@ function BoardColumn({ workspaceId, projectId, taskHref, status, editable, busy,
     queryFn: ({ pageParam, signal }) => tasksApi.list(workspaceId, projectId, `sort=board&status=${status}&page=${pageParam}`, signal),
     getNextPageParam: (page) => page.page < page.pages ? page.page + 1 : undefined,
     retry: false,
+    refetchInterval: collaborationRefresh,
   });
   // A move can shift tasks between pages while a refetch runs.
   const items = [...new Map(list.data?.pages.flatMap((page) => page.items).map((task) => [task.id, task])).values()];

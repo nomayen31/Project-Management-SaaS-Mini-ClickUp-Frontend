@@ -4,6 +4,8 @@ import { useState, type FormEvent, type ReactNode } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { TaskDiscussion } from "./collaboration";
+import { collaborationRefresh } from "@/lib/collaboration-api";
 import { ProjectBoard } from "./project-board";
 import { ProjectCalendar } from "./project-calendar";
 import { TaskAttachments } from "./task-attachments";
@@ -247,7 +249,7 @@ function TaskList({ workspaceId, projectId, editable }: { workspaceId: string; p
   const [filters, setFilters] = useState<Record<string, string>>({});
   const [page, setPage] = useState(1);
   const query = queryString(filters, page);
-  const list = useQuery({ queryKey: ["projects", workspaceId, projectId, "tasks", query], queryFn: ({ signal }) => tasksApi.list(workspaceId, projectId, query, signal) });
+  const list = useQuery({ queryKey: ["projects", workspaceId, projectId, "tasks", query], queryFn: ({ signal }) => tasksApi.list(workspaceId, projectId, query, signal), refetchInterval: collaborationRefresh });
   const change = useChange(workspaceId);
   return <section className="workspace-panel">
     <h2>Task list</h2>
@@ -277,7 +279,7 @@ function TaskDetails({ workspaceId, projectId, taskId, editable, members, view }
   const [deleted, setDeleted] = useState(false);
   const result = useQuery({
     queryKey: ["projects", workspaceId, projectId, "task", taskId],
-    queryFn: ({ signal }) => tasksApi.get(workspaceId, projectId, taskId, signal), enabled: !deleted, retry: false,
+    queryFn: ({ signal }) => tasksApi.get(workspaceId, projectId, taskId, signal), enabled: !deleted, retry: false, refetchInterval: collaborationRefresh,
   });
   const change = useChange(workspaceId);
   const cache = useQueryClient();
@@ -339,6 +341,7 @@ function TaskDetails({ workspaceId, projectId, taskId, editable, members, view }
         change.mutate(async () => { await tasksApi.createSubtask(workspaceId, projectId, taskId, value); form.reset(); });
       }}><label>Subtask title<input name="title" minLength={2} maxLength={150} required /></label><Button type="submit" disabled={change.isPending}>Add subtask</Button></form>}
       <TaskAttachments workspaceId={workspaceId} projectId={projectId} taskId={taskId} editable={editable} />
+      <TaskDiscussion workspaceId={workspaceId} projectId={projectId} taskId={taskId} editable={editable} />
     </>}
   </section>;
 }

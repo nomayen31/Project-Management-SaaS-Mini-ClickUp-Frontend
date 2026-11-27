@@ -4,6 +4,7 @@ import { useEffect, useState, type FormEvent } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { WorkspaceCollaboration } from "./collaboration";
 import { Button } from "@/components/ui/button";
 import { workspacesApi, WorkspaceRequestError, type AssignableRole, type Role, type Workspace } from "@/lib/workspaces-api";
 
@@ -103,7 +104,8 @@ export function WorkspacesScreen() {
         </>}
         {feedback.error && <p role="alert">{feedback.error}</p>}
         {feedback.notice && <p role="status">{feedback.notice}</p>}
-        {active && <WorkspaceDetails workspace={active} key={active.id} />}
+        {active && <WorkspaceDetails workspace={active} key={"details-" + active.id} />}
+        {active && <WorkspaceCollaboration workspaceId={active.id} key={"collaboration-" + active.id} />}
       </main>
   );
 }

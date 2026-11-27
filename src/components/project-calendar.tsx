@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
+import { collaborationRefresh } from "@/lib/collaboration-api";
 import { tasksApi } from "@/lib/projects-api";
 
 const weekday = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -33,6 +34,7 @@ export function ProjectCalendar({ workspaceId, projectId, taskHref }: {
     queryFn: ({ pageParam, signal }) => tasksApi.list(workspaceId, projectId, `from=${from}&to=${to}&sort=due&page=${pageParam}&limit=50`, signal),
     getNextPageParam: (page) => page.page < page.pages ? page.page + 1 : undefined,
     retry: false,
+    refetchInterval: collaborationRefresh,
   });
 
   const tasks = [...new Map(list.data?.pages.flatMap((page) => page.items).map((task) => [task.id, task])).values()];
