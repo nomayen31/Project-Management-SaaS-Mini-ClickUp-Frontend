@@ -5,6 +5,7 @@ import { ArrowUpRight, CalendarDays, FolderKanban } from "lucide-react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "./ui/button";
+import { DashboardInsights } from "./dashboard-insights";
 import { HealthPanel } from "./health-panel";
 import { projectsApi } from "@/lib/projects-api";
 import { workspacesApi, WorkspaceRequestError } from "@/lib/workspaces-api";
@@ -48,6 +49,7 @@ export function Overview() {
     </section> : <>
       {workspaces.isPending && <p role="status">Loading your workspaces…</p>}
       {workspaces.isError && <div className="workspace-panel"><p role="alert">Workspaces could not be loaded.</p><Button onClick={() => void workspaces.refetch()}>Try again</Button></div>}
+      {active && <DashboardInsights workspaceId={active.id} />}
       {active && <section className="workspace-panel dashboard-projects" aria-labelledby="recent-project-title">
         <div className="workspace-heading dashboard-panel-heading">
           <h2 id="recent-project-title">Recent projects {projects.data && <span className="workspace-role">{projects.data.total}</span>}</h2>

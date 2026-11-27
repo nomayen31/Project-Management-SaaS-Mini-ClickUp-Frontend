@@ -15,3 +15,7 @@ Inside a project, switch between List, Board, and Calendar. On the board, drag a
 The overview shows live project progress for the selected workspace. Navigation preserves workspace selection between the overview, workspaces, and projects. The selected theme persists across app and account pages.
 
 Vercel uses the Next.js framework preset from `vercel.json`. Set `BACKEND_ORIGIN` in Vercel to the live Express origin before verifying signed-in flows.
+
+Task details show discussions and activity history. Select people when posting a comment to notify them. The workspace Collaboration panel contains the signed-in user’s inbox and the workspace activity feed. Active views refresh periodically.
+
+The workspace overview includes task and project counts, approaching deadlines, and a workload chart. Account settings let users update their display name and control delivery of new mention notifications.
